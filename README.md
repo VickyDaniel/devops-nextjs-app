@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevOps Demo - Next.js Application
+
+A REST API demo application built with Next.js for DevOps student lab exercises.
+
+## Lab Programs Covered
+
+| Program | Topic |
+|---------|-------|
+| 1 | Version Control with Git and GitHub |
+| 2 | Building a REST API with Next.js |
+| 3 | Building the Web UI & Connecting to REST API |
+| 4 | Deploying the Web Application in Docker |
+| 5 | Jenkins Setup & CI/CD Pipeline |
+| 6 | Writing and Running Unit Tests in a CI/CD Pipeline |
+| 7 | Working with Ansible, Terraform and Selenium |
+| 8 | Monitoring and Logging with Prometheus & Grafana |
+| 9 | Deploying Applications to Kubernetes |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Bun 1.0+ (or Node.js 18+)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+# Clone the repository
+git clone <repository-url>
+cd demo-ct
+
+# Install dependencies
+bun install
+
+# Run development server
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Swagger UI
 
-## Learn More
+Interactive API documentation available at: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-To learn more about Next.js, take a look at the following resources:
+### API Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Health Check
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/health` | Health check endpoint (for Docker, K8s, Prometheus) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### Users API
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/users` | Get all users |
+| POST | `/api/users` | Create a new user |
+| GET | `/api/users/{id}` | Get user by ID |
+| PUT | `/api/users/{id}` | Update user by ID |
+| DELETE | `/api/users/{id}` | Delete user by ID |
 
-## Deploy on Vercel
+#### Products API
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Get all products |
+| POST | `/api/products` | Create a new product |
+| GET | `/api/products/{id}` | Get product by ID |
+| PUT | `/api/products/{id}` | Update product by ID |
+| DELETE | `/api/products/{id}` | Delete product by ID |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Example API Requests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Health Check
+curl http://localhost:3000/api/health
+
+# Get all users
+curl http://localhost:3000/api/users
+
+# Create a new user
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John", "email": "john@example.com", "role": "developer"}'
+
+# Get user by ID
+curl http://localhost:3000/api/users/1
+
+# Update user
+curl -X PUT http://localhost:3000/api/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Updated", "role": "admin"}'
+
+# Delete user
+curl -X DELETE http://localhost:3000/api/users/1
+
+# Get all products
+curl http://localhost:3000/api/products
+
+# Create a new product
+curl -X POST http://localhost:3000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Monitor", "price": 299.99, "stock": 100}'
+```
+
+## Project Structure
+
+```
+demo-ct/
+├── data/                    # JSON data files (local storage)
+│   ├── users.json
+│   └── products.json
+├── public/
+│   └── openapi.json         # OpenAPI 3.0 specification
+├── src/
+│   └── app/
+│       ├── api/             # API routes
+│       │   ├── health/
+│       │   ├── users/
+│       │   └── products/
+│       ├── api-docs/        # Swagger UI page
+│       ├── layout.tsx
+│       └── page.tsx
+├── package.json
+└── README.md
+```
+
+## Docker (Program 4)
+
+```dockerfile
+# Example Dockerfile
+FROM oven/bun:1-alpine
+WORKDIR /app
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
+COPY . .
+RUN bun run build
+EXPOSE 3000
+CMD ["bun", "start"]
+```
+
+```bash
+# Build and run
+docker build -t devops-demo .
+docker run -p 3000:3000 devops-demo
+```
+
+## Available Scripts
+
+```bash
+bun dev      # Start development server
+bun run build    # Build for production
+bun start    # Start production server
+bun run lint     # Run ESLint
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 16
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **API Docs**: OpenAPI 3.0 + Swagger UI
+- **Data Storage**: Local JSON files
+
+## License
+
+This project is for educational purposes.
